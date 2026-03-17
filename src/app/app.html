@@ -1,0 +1,26 @@
+<main class="h-screen flex flex-col p-3">
+  <div class="pb-3">
+    <a href="/">
+      <h1 class="text-4xl pb-1">Michael Cox</h1>
+    </a>
+    <div class="flex gap-2">
+      <a
+        href="https://www.linkedin.com/in/michaelaaroncox/"
+        target="_blank"
+        rel="noopener"
+        className="icon"
+      >
+        <img class="invert" src="icons/linkedin.svg" alt="linkedin" width="20" height="20" />
+      </a>
+      <a href="https://github.com/michaelcox3" target="_blank" rel="noopener" className="icon">
+        <img class="invert" src="icons/github.svg" alt="github" width="20" height="20" />
+      </a>
+      <a href="mailto:maaroncox@gmail.com" className="icon">
+        <img class="invert" src="icons/email.svg" alt="email" width="20" height="20" />
+      </a>
+    </div>
+  </div>
+  <div class="mx-auto flex-1 flex flex-col w-full">
+    <router-outlet></router-outlet>
+  </div>
+</main>

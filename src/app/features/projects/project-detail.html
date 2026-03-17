@@ -1,0 +1,7 @@
+@if (loading()) {
+  <!-- nothing -->
+} @else if (projectComponent()) {
+  <ng-container *ngComponentOutlet="projectComponent()" />
+} @else {
+  <p>Project not found.</p>
+}

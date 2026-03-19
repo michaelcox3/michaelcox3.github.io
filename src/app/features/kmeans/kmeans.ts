@@ -5,7 +5,6 @@ import {
   ElementRef,
   ViewChild,
   inject,
-  AfterViewInit,
   signal,
 } from '@angular/core';
 import * as THREE from 'three';
@@ -36,6 +35,17 @@ export class KMeansComponent implements OnInit, OnDestroy {
     { value: 'diagonal', label: 'Diagonal' },
   ];
 
+  private readonly PALETTE = [
+    new THREE.Color(0xff6b6b),
+    new THREE.Color(0x6bcbff),
+    new THREE.Color(0x6bff8e),
+    new THREE.Color(0xffd36b),
+    new THREE.Color(0xd36bff),
+    new THREE.Color(0xff9f43),
+    new THREE.Color(0xa29bfe),
+    new THREE.Color(0xfd79a8),
+  ];
+
   @ViewChild('canvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private renderer!: THREE.WebGLRenderer;
@@ -45,30 +55,44 @@ export class KMeansComponent implements OnInit, OnDestroy {
   private pointCloud!: THREE.Points;
   private centroidCloud!: THREE.Points;
 
+  private resizeObserver!: ResizeObserver;
+
   ngOnInit() {
     this.initThree();
     this.reset();
     this.animate();
   }
 
+  ngOnDestroy() {
+    cancelAnimationFrame(this.animationId);
+    window.removeEventListener('resize', this.onResize);
+    this.renderer.dispose();
+  }
+
   private initThree() {
     const canvas = this.canvasRef.nativeElement;
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight - 180;
 
-    // renderer
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    this.renderer.setSize(width, height, false);
     this.renderer.setPixelRatio(window.devicePixelRatio);
 
-    // scene
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x1a1a2e);
 
-    // camera
-    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
     this.camera.position.z = 10;
+
+    window.addEventListener('resize', this.onResize);
+    this.onResize();
   }
+
+  private onResize = () => {
+    const width = this.canvasRef.nativeElement.clientWidth;
+    const height = Math.min(width, window.innerHeight / 2);
+
+    this.renderer.setSize(width, height, false);
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+  };
 
   step() {
     if (this.state().converged) return;
@@ -108,23 +132,12 @@ export class KMeansComponent implements OnInit, OnDestroy {
     const positions = new Float32Array(this.state().points.length * 3);
     const colors = new Float32Array(this.state().points.length * 3);
 
-    const palette = [
-      new THREE.Color(0xff6b6b),
-      new THREE.Color(0x6bcbff),
-      new THREE.Color(0x6bff8e),
-      new THREE.Color(0xffd36b),
-      new THREE.Color(0xd36bff),
-      new THREE.Color(0xff9f43),
-      new THREE.Color(0xa29bfe),
-      new THREE.Color(0xfd79a8),
-    ];
-
     this.state().points.forEach((p, i) => {
       positions[i * 3] = p.x;
       positions[i * 3 + 1] = p.y;
       positions[i * 3 + 2] = 0;
 
-      const color = palette[p.centroidId % palette.length];
+      const color = this.PALETTE[p.centroidId % this.PALETTE.length];
       colors[i * 3] = color.r;
       colors[i * 3 + 1] = color.g;
       colors[i * 3 + 2] = color.b;
@@ -146,23 +159,12 @@ export class KMeansComponent implements OnInit, OnDestroy {
     const positions = new Float32Array(centroids.length * 3);
     const colors = new Float32Array(centroids.length * 3);
 
-    const palette = [
-      new THREE.Color(0xff6b6b),
-      new THREE.Color(0x6bcbff),
-      new THREE.Color(0x6bff8e),
-      new THREE.Color(0xffd36b),
-      new THREE.Color(0xd36bff),
-      new THREE.Color(0xff9f43),
-      new THREE.Color(0xa29bfe),
-      new THREE.Color(0xfd79a8),
-    ];
-
     centroids.forEach((c, i) => {
       positions[i * 3] = c.x;
       positions[i * 3 + 1] = c.y;
       positions[i * 3 + 2] = 0;
 
-      const color = palette[i % palette.length];
+      const color = this.PALETTE[i % this.PALETTE.length];
       colors[i * 3] = color.r;
       colors[i * 3 + 1] = color.g;
       colors[i * 3 + 2] = color.b;
@@ -186,11 +188,6 @@ export class KMeansComponent implements OnInit, OnDestroy {
   private animate() {
     this.animationId = requestAnimationFrame(() => this.animate());
     this.renderer.render(this.scene, this.camera);
-  }
-
-  ngOnDestroy() {
-    cancelAnimationFrame(this.animationId);
-    this.renderer.dispose();
   }
 
   onKChange(value: number) {

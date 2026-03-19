@@ -3,6 +3,11 @@ export interface Point {
   y: number;
 }
 
+export interface Range {
+  min: number;
+  max: number;
+}
+
 export interface Centroid {
   id: number;
   x: number;

@@ -1,0 +1,52 @@
+<div class="max-w-4xl mx-auto flex-1 flex flex-col gap-3">
+  <div>
+    <h1>Multi-Layer Perceptron Classifier Visualization</h1>
+    <hr />
+  </div>
+
+  <div>
+    <p>
+      This project visualizes a simple Multi-Layer Perceptron (MLP) classifier trained on 2D
+      datasets.
+    </p>
+    <p>
+      You can select different datasets and watch how the decision boundary evolves as the model
+      learns.
+    </p>
+  </div>
+
+  <div class="flex gap-8">
+    <div>
+      <span class="text-sm text-gray-400">Learning Rate</span>
+      <p class="text-sm">{{ learningRate() }}</p>
+    </div>
+    <div>
+      <span class="text-sm text-gray-400">Layer Sizes</span>
+      <p class="text-sm">{{ layers.join(' → ') }}</p>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap md:flex-nowrap items-end gap-4">
+    <label class="flex flex-col gap-1 text-sm">
+      <span class="text-gray-400">Dataset</span>
+      <select (change)="selectDataset($any($event.target).value)">
+        <option value="xor">XOR</option>
+        <option value="circle">Circle</option>
+        <option value="random">Random</option>
+      </select>
+    </label>
+    <button (click)="regenerateData()">Regenerate Data</button>
+  </div>
+  <div class="flex items-center gap-4">
+    <button (click)="reset()">Reset Parameters</button>
+    <button (click)="step()" [disabled]="training() || state().converged">Step</button>
+    <button (click)="startTraining()" [disabled]="training() || state().converged">Train</button>
+    <button (click)="stopTraining()" [disabled]="!training()">Stop</button>
+    <span class="text-sm text-gray-400">Epoch: {{ state().iteration }}</span>
+    <span class="text-sm text-gray-400">Train Loss: {{ state().loss | number: '1.2-4' }}</span>
+  </div>
+  <div class="flex">
+    <canvas #neuralnetworkcanvas class="w-full"></canvas>
+    <canvas #decisionboundarycanvas class="w-full"></canvas>
+  </div>
+</div>

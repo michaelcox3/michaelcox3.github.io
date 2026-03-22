@@ -11,13 +11,11 @@
       (ngModelChange)="onKChange($event)"
       [min]="MIN_K"
       [max]="MAX_K"
-      class="w-16 bg-gray-800 text-white text-center rounded px-2 py-1"
     />
     <label class="text-sm">Shape</label>
     <select
       [ngModel]="shape()"
       (ngModelChange)="onShapeChange($event)"
-      class="bg-gray-800 text-white rounded px-2 py-1 text-sm"
     >
       @for (s of SHAPES; track s.value) {
         <option [value]="s.value">{{ s.label }}</option>

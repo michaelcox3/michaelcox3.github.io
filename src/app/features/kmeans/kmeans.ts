@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ElementRef,
-  ViewChild,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, inject, signal } from '@angular/core';
 import * as THREE from 'three';
 import { KMeansService } from './services/kmeans.service';
 import { DatasetShape, KMeansState } from './models/kmeans.model';
@@ -55,8 +47,6 @@ export class KMeansComponent implements OnInit, OnDestroy {
   private pointCloud!: THREE.Points;
   private centroidCloud!: THREE.Points;
 
-  private resizeObserver!: ResizeObserver;
-
   ngOnInit() {
     this.initThree();
     this.reset();
@@ -83,6 +73,11 @@ export class KMeansComponent implements OnInit, OnDestroy {
 
     window.addEventListener('resize', this.onResize);
     this.onResize();
+  }
+
+  private animate() {
+    this.animationId = requestAnimationFrame(() => this.animate());
+    this.renderer.render(this.scene, this.camera);
   }
 
   private onResize = () => {
@@ -183,11 +178,6 @@ export class KMeansComponent implements OnInit, OnDestroy {
     if (this.centroidCloud) this.scene.remove(this.centroidCloud);
     this.centroidCloud = new THREE.Points(geometry, material);
     this.scene.add(this.centroidCloud);
-  }
-
-  private animate() {
-    this.animationId = requestAnimationFrame(() => this.animate());
-    this.renderer.render(this.scene, this.camera);
   }
 
   onKChange(value: number) {

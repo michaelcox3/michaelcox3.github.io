@@ -4,7 +4,7 @@ export abstract class BaseRenderer {
   protected renderer!: THREE.WebGLRenderer;
   protected scene!: THREE.Scene;
   protected camera!: THREE.PerspectiveCamera;
-  private animationId!: number;
+  private animationId: number | null = null;
 
   init(canvas: HTMLCanvasElement) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -15,27 +15,28 @@ export abstract class BaseRenderer {
 
     this.camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
     this.camera.position.z = 10;
-
-    this.animate();
   }
 
   resize(width: number, height: number) {
     this.renderer.setSize(width, height, false);
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
+    this.requestRender();
   }
 
   dispose() {
-    cancelAnimationFrame(this.animationId);
+    if (this.animationId !== null) {
+      cancelAnimationFrame(this.animationId);
+      this.animationId = null;
+    }
     this.renderer.dispose();
   }
 
-  // Override to implement rendering logic
-  protected abstract update(): void;
-
-  private animate() {
-    this.animationId = requestAnimationFrame(() => this.animate());
-    this.update();
-    this.renderer.render(this.scene, this.camera);
+  protected requestRender() {
+    if (this.animationId !== null) return;
+    this.animationId = requestAnimationFrame(() => {
+      this.animationId = null;
+      this.renderer.render(this.scene, this.camera);
+    });
   }
 }

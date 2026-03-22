@@ -43,6 +43,7 @@ export class MLPComponent implements OnInit, OnDestroy {
   // Training state
   state = signal({ iteration: 0, converged: false, loss: 0 });
   training = signal(false);
+  private convergeThreshold = 0.05;
   private intervalId: ReturnType<typeof setInterval> | null = null;
 
   // Network visualization
@@ -88,7 +89,7 @@ export class MLPComponent implements OnInit, OnDestroy {
     if (this.state().converged) return;
     const loss = this.trainer.step();
     const iteration = this.state().iteration + 1;
-    const converged = loss < 0.01;
+    const converged = loss < this.convergeThreshold;
     this.state.set({ iteration, converged, loss });
     this.neuralNetworkRenderer.render(this.network);
     this.decisionBoundaryRenderer.render(this.network, this.data);

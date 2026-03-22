@@ -10,15 +10,12 @@ export class NeuralNetworkRenderer extends BaseRenderer {
   private layerSpacing = 3;
   private neuronSpacing = 1.5;
 
-  protected override update(): void {
-    // No continuous animation needed, so we can leave this empty
-  }
-
   render(network: NeuralNetwork) {
     this.clear();
     this.renderNeurons(network);
     this.centerNetwork(network);
     this.renderConnections(network);
+    this.requestRender();
   }
 
   private clear() {

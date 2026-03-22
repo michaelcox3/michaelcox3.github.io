@@ -19,17 +19,24 @@ export function generateDataset(type: DatasetType, n: number = 100): TrainingDat
 
   switch (type) {
     case 'xor': {
-      const clusters = [
-        { cx: 0.25, cy: 0.25, label: 0 },
-        { cx: 0.75, cy: 0.75, label: 0 },
-        { cx: 0.25, cy: 0.75, label: 1 },
-        { cx: 0.75, cy: 0.25, label: 1 },
-      ];
       const std = 0.05;
-      for (let i = 0; i < n; i++) {
-        const c = clusters[i % 4];
+      const class0 = [
+        { cx: 0.25, cy: 0.25 },
+        { cx: 0.75, cy: 0.75 },
+      ];
+      const class1 = [
+        { cx: 0.25, cy: 0.75 },
+        { cx: 0.75, cy: 0.25 },
+      ];
+      for (let i = 0; i < half; i++) {
+        const c = class0[i % 2];
         inputs.push([clamp(c.cx + randn() * std, 0, 1), clamp(c.cy + randn() * std, 0, 1)]);
-        targets.push(c.label);
+        targets.push(0);
+      }
+      for (let i = 0; i < n - half; i++) {
+        const c = class1[i % 2];
+        inputs.push([clamp(c.cx + randn() * std, 0, 1), clamp(c.cy + randn() * std, 0, 1)]);
+        targets.push(1);
       }
       break;
     }

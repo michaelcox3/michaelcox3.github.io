@@ -19,15 +19,16 @@ import { DecisionBoundaryRenderer } from './decision-boundary-renderer';
   templateUrl: './mlp.html',
 })
 export class MLPComponent implements OnInit, OnDestroy {
-  dataSize = 10;
+  dataSize = signal(10);
   datasetType = signal<DatasetType>('xor');
-  data = generateDataset(this.datasetType(), this.dataSize);
+  data = generateDataset(this.datasetType(), this.dataSize());
 
   layers = [2, 4, 4, 2];
   learningRate = signal(0.01);
+  batchSize = signal(1);
   network = new Classifier(this.layers);
   optimizer = new SGDMomentum(this.learningRate());
-  trainer = new ClassificationTrainer(this.network, CrossEntropyLoss, this.optimizer, this.data);
+  trainer = new ClassificationTrainer(this.network, CrossEntropyLoss, this.optimizer, this.data, this.batchSize());
   state = signal({ iteration: 0, converged: false, loss: 0 });
   training = signal(false);
   private intervalId: ReturnType<typeof setInterval> | null = null;
@@ -68,7 +69,7 @@ export class MLPComponent implements OnInit, OnDestroy {
     this.state.set({ iteration: 0, converged: false, loss: 0 });
     this.network = new Classifier(this.layers);
     this.optimizer = new SGDMomentum(this.learningRate());
-    this.trainer = new ClassificationTrainer(this.network, CrossEntropyLoss, this.optimizer, this.data);
+    this.trainer = new ClassificationTrainer(this.network, CrossEntropyLoss, this.optimizer, this.data, this.batchSize());
     this.neuralNetworkRenderer.render(this.network);
     this.decisionBoundaryRenderer.render(this.network, this.data);
   }
@@ -104,13 +105,12 @@ export class MLPComponent implements OnInit, OnDestroy {
   }
 
   regenerateData() {
-    this.data = generateDataset(this.datasetType(), this.dataSize);
+    this.data = generateDataset(this.datasetType(), this.dataSize());
     this.reset();
   }
 
   selectDataset(type: DatasetType) {
     this.datasetType.set(type);
-    this.data = generateDataset(type, this.dataSize);
-    this.reset();
+    this.regenerateData();
   }
 }

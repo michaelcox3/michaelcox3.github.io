@@ -68,6 +68,10 @@ body {
   .btn-disabled {
     @apply opacity-50 cursor-not-allowed;
   }
+
+  .label {
+    @apply text-sm text-gray-400;
+  }
 }
 
 /* code blocks */

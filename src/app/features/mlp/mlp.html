@@ -70,8 +70,8 @@
   </div>
   <div class="flex items-center gap-4">
     <button (click)="reset()" [disabled]="training()">Reset Parameters</button>
-    <button (click)="step()" [disabled]="training()">Step</button>
-    <button (click)="startTraining()" [disabled]="training()">Train</button>
+    <button (click)="step()" [disabled]="training() || state().converged">Step</button>
+    <button (click)="startTraining()" [disabled]="training() || state().converged">Train</button>
     <button class="btn-red" (click)="stopTraining()" [disabled]="!training()">Stop</button>
     <span>Epoch: {{ state().iteration }}</span>
     <span>Train Loss: {{ state().loss | number: '1.2-4' }}</span>

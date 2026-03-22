@@ -20,7 +20,7 @@ import { DecisionBoundaryRenderer } from './decision-boundary-renderer';
 })
 export class MLPComponent implements OnInit, OnDestroy {
   // Architecture and hyperparameters
-  layers = signal([2, 4, 4, 2]);
+  layers = signal([2, 4, 2]);
   learningRate = signal(0.01);
   batchSize = signal(1);
 

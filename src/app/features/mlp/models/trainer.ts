@@ -17,6 +17,10 @@ export abstract class Trainer {
     protected batchSize: number = 1,
   ) {}
 
+  setData(data: TrainingData) {
+    this.data = data;
+  }
+
   abstract step(): number;
 
   train(epochs: number) {
@@ -43,7 +47,7 @@ export class ClassificationTrainer extends Trainer {
   }
 
   step(): number {
-    // Shuffle indices
+    // Shuffle indices for stochasticity
     const indices = [...Array(this.data.inputs.length).keys()].sort(() => Math.random() - 0.5);
 
     let totalLoss = 0;

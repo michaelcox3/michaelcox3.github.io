@@ -3,27 +3,33 @@
     <h1>K-Means Clustering Visualization</h1>
     <hr />
   </div>
-  <div class="flex flex-wrap md:flex-nowrap items-center gap-4">
-    <label class="text-sm">Clusters (k)</label>
-    <input
-      type="number"
-      [ngModel]="k()"
-      (ngModelChange)="onKChange($event)"
-      [min]="MIN_K"
-      [max]="MAX_K"
-    />
-    <label class="text-sm">Shape</label>
-    <select
-      [ngModel]="shape()"
-      (ngModelChange)="onShapeChange($event)"
-    >
-      @for (s of SHAPES; track s.value) {
-        <option [value]="s.value">{{ s.label }}</option>
-      }
-    </select>
-    <button (click)="reset()">Reset</button>
-    <button (click)="step()" [disabled]="state().converged">Step</button>
-    <span class="text-sm text-gray-400">Iteration: {{ state().iteration }}</span>
+  <div class="flex flex-wrap md:flex-nowrap items-end gap-4">
+    <label>
+      <span>Clusters (k)</span>
+      <input
+        type="number"
+        [ngModel]="k()"
+        (ngModelChange)="onKChange($event)"
+        [min]="MIN_K"
+        [max]="MAX_K"
+      />
+    </label>
+    <label>
+      <span>Shape</span>
+      <select
+        [ngModel]="shape()"
+        (ngModelChange)="onShapeChange($event)"
+      >
+        @for (s of SHAPES; track s.value) {
+          <option [value]="s.value">{{ s.label }}</option>
+        }
+      </select>
+    </label>
+    <div class="flex items-center gap-4">
+      <button (click)="reset()">Reset</button>
+      <button (click)="step()" [disabled]="state().converged">Step</button>
+      <span>Iteration: {{ state().iteration }}</span>
+    </div>
   </div>
   <div>
     <canvas #canvas class="w-full"></canvas>

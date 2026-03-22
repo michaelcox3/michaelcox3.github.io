@@ -19,16 +19,28 @@ import { DecisionBoundaryRenderer } from './decision-boundary-renderer';
   templateUrl: './mlp.html',
 })
 export class MLPComponent implements OnInit, OnDestroy {
+  // Architecture and hyperparameters
+  layers = signal([2, 4, 4, 2]);
+  learningRate = signal(0.01);
+  batchSize = signal(1);
+
+  // Data
   dataSize = signal(10);
   datasetType = signal<DatasetType>('xor');
   data = generateDataset(this.datasetType(), this.dataSize());
 
-  layers = [2, 4, 4, 2];
-  learningRate = signal(0.01);
-  batchSize = signal(1);
-  network = new Classifier(this.layers);
+  // Model
+  network = new Classifier(this.layers());
   optimizer = new SGDMomentum(this.learningRate());
-  trainer = new ClassificationTrainer(this.network, CrossEntropyLoss, this.optimizer, this.data, this.batchSize());
+  trainer = new ClassificationTrainer(
+    this.network,
+    CrossEntropyLoss,
+    this.optimizer,
+    this.data,
+    this.batchSize(),
+  );
+
+  // Training state
   state = signal({ iteration: 0, converged: false, loss: 0 });
   training = signal(false);
   private intervalId: ReturnType<typeof setInterval> | null = null;
@@ -66,10 +78,8 @@ export class MLPComponent implements OnInit, OnDestroy {
 
   reset(): void {
     this.stopTraining();
+    this.createTrainer();
     this.state.set({ iteration: 0, converged: false, loss: 0 });
-    this.network = new Classifier(this.layers);
-    this.optimizer = new SGDMomentum(this.learningRate());
-    this.trainer = new ClassificationTrainer(this.network, CrossEntropyLoss, this.optimizer, this.data, this.batchSize());
     this.neuralNetworkRenderer.render(this.network);
     this.decisionBoundaryRenderer.render(this.network, this.data);
   }
@@ -104,13 +114,42 @@ export class MLPComponent implements OnInit, OnDestroy {
     }
   }
 
+  createTrainer() {
+    this.network = new Classifier(this.layers());
+    this.optimizer = new SGDMomentum(this.learningRate());
+    this.trainer = new ClassificationTrainer(
+      this.network,
+      CrossEntropyLoss,
+      this.optimizer,
+      this.data,
+      this.batchSize(),
+    );
+  }
+
   regenerateData() {
     this.data = generateDataset(this.datasetType(), this.dataSize());
-    this.reset();
+    this.trainer.setData(this.data); // Update trainer with new data, don't reset model weights
+    this.neuralNetworkRenderer.render(this.network);
+    this.decisionBoundaryRenderer.render(this.network, this.data);
+  }
+
+  selectDatasetSize(size: number) {
+    this.dataSize.set(size);
+    this.regenerateData();
   }
 
   selectDataset(type: DatasetType) {
     this.datasetType.set(type);
     this.regenerateData();
+  }
+
+  selectLearningRate(rate: number) {
+    this.learningRate.set(rate);
+    this.reset();
+  }
+
+  selectBatchSize(size: number) {
+    this.batchSize.set(size);
+    this.reset();
   }
 }

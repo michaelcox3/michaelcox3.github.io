@@ -12,56 +12,71 @@
     <p>
       Select different datasets and watch how the decision boundary evolves as the model learns.
     </p>
-    <p>If training plateaus, try resetting the parameters or regenerating the dataset.</p>
+    <p>If training plateaus, try changing the learning rate, resetting the parameters, or regenerating the dataset.</p>
   </div>
 
   <div class="flex gap-8">
-    <div>
-      <span class="label">Dataset Size</span>
-      <p class="text-sm">{{ dataSize() }}</p>
-    </div>
-    <div>
-      <span class="label">Layer Sizes</span>
-      <p class="text-sm">{{ layers.join(' → ') }}</p>
-    </div>
-    <div>
-      <span class="label">Learning Rate</span>
-      <p class="text-sm">{{ learningRate() }}</p>
-    </div>
-    <div>
-      <span class="label">Batch Size</span>
-      <p class="text-sm">{{ batchSize() }}</p>
-    </div>
-    <div>
-      <span class="label">Optimizer</span>
-      <p class="text-sm">SGD Momentum</p>
-    </div>
-    <div>
-      <span class="label">Loss Function</span>
-      <p class="text-sm">Cross Entropy</p>
-    </div>
+    <label>
+      <span>Layer Sizes</span>
+      <p>{{ layers().join(' → ') }}</p>
+    </label>
+    <label>
+      <span>Learning Rate</span>
+      <select [ngModel]="learningRate()" (ngModelChange)="selectLearningRate(+$event)" [disabled]="training()">
+        <option value="0.1">0.1</option>
+        <option value="0.01">0.01</option>
+        <option value="0.001">0.001</option>
+      </select>
+    </label>
+    <label>
+      <span>Batch Size</span>
+      <select [ngModel]="batchSize()" (ngModelChange)="selectBatchSize(+$event)" [disabled]="training()">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="4">4</option>
+      </select>
+    </label>
+    <label>
+      <span>Optimizer</span>
+      <p>SGD Momentum</p>
+    </label>
+    <label>
+      <span>Loss Function</span>
+      <p>Cross Entropy</p>
+    </label>
   </div>
 
   <div class="flex flex-wrap md:flex-nowrap items-end gap-4">
-    <label class="flex flex-col gap-1 text-sm">
-      <span class="label">Dataset</span>
-      <select (change)="selectDataset($any($event.target).value)">
+    <label>
+      <span>Dataset Size</span>
+      <input
+        type="number"
+        [ngModel]="dataSize()"
+        (ngModelChange)="selectDatasetSize($event)"
+        [min]="4"
+        [max]="20"
+        [disabled]="training()"
+      />
+    </label>
+    <label>
+      <span>Dataset</span>
+      <select [ngModel]="datasetType()" (ngModelChange)="selectDataset($event)" [disabled]="training()">
         <option value="xor">XOR</option>
         <option value="circle">Circle</option>
         <option value="random">Random</option>
       </select>
     </label>
-    <button (click)="regenerateData()">Regenerate Data</button>
+    <button (click)="regenerateData()" [disabled]="training()">Regenerate Data</button>
   </div>
   <div class="flex items-center gap-4">
-    <button (click)="reset()">Reset Parameters</button>
-    <button (click)="step()" [disabled]="training() || state().converged">Step</button>
-    <button (click)="startTraining()" [disabled]="training() || state().converged">Train</button>
-    <button (click)="stopTraining()" [disabled]="!training()">Stop</button>
-    <span class="label">Epoch: {{ state().iteration }}</span>
-    <span class="label">Train Loss: {{ state().loss | number: '1.2-4' }}</span>
+    <button (click)="reset()" [disabled]="training()">Reset Parameters</button>
+    <button (click)="step()" [disabled]="training()">Step</button>
+    <button (click)="startTraining()" [disabled]="training()">Train</button>
+    <button class="btn-red" (click)="stopTraining()" [disabled]="!training()">Stop</button>
+    <span>Epoch: {{ state().iteration }}</span>
+    <span>Train Loss: {{ state().loss | number: '1.2-4' }}</span>
     @if (state().converged) {
-      <span class="label text-green-500">Converged</span>
+      <span class="text-green-500">Converged</span>
     }
   </div>
   <div class="flex">

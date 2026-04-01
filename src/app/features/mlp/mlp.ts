@@ -25,7 +25,7 @@ export class MLPComponent implements OnInit, OnDestroy {
   batchSize = signal(1);
 
   // Data
-  dataSize = signal(10);
+  dataSize = signal(8);
   datasetType = signal<DatasetType>('xor');
   data = generateDataset(this.datasetType(), this.dataSize());
 

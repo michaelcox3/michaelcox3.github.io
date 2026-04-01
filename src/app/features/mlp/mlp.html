@@ -15,7 +15,7 @@
     <p>If training plateaus, try changing the learning rate, resetting the parameters, or regenerating the dataset.</p>
   </div>
 
-  <div class="flex gap-8">
+  <div class="flex gap-8 flex-wrap md:flex-nowrap">
     <label>
       <span>Layer Sizes</span>
       <p>{{ layers().join(' → ') }}</p>
@@ -46,7 +46,7 @@
     </label>
   </div>
 
-  <div class="flex flex-wrap md:flex-nowrap items-end gap-4">
+  <div class="flex flex-wrap gap-4 md:flex-nowrap items-end">
     <label>
       <span>Dataset Size</span>
       <input
@@ -68,7 +68,7 @@
     </label>
     <button (click)="regenerateData()" [disabled]="training()">Regenerate Data</button>
   </div>
-  <div class="flex items-center gap-4">
+  <div class="flex items-center gap-4 flex-wrap md:flex-nowrap">
     <button (click)="reset()" [disabled]="training()">Reset Parameters</button>
     <button (click)="step()" [disabled]="training() || state().converged">Step</button>
     <button (click)="startTraining()" [disabled]="training() || state().converged">Train</button>
@@ -79,8 +79,12 @@
       <span class="text-green-500">Converged</span>
     }
   </div>
-  <div class="flex">
-    <canvas #neuralnetworkcanvas class="w-full"></canvas>
-    <canvas #decisionboundarycanvas class="w-full"></canvas>
+  <div class="flex flex-col md:flex-row">
+    <div class="flex-1 min-w-0">
+      <canvas class="w-full" #decisionboundarycanvas></canvas>
+    </div>
+    <div class="flex-1 min-w-0">
+      <canvas class="w-full" #neuralnetworkcanvas></canvas>
+    </div>
   </div>
 </div>

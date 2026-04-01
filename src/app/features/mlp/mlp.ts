@@ -47,16 +47,15 @@ export class MLPComponent implements OnInit, OnDestroy {
   private intervalId: ReturnType<typeof setInterval> | null = null;
 
   // Network visualization
-  @ViewChild('neuralnetworkcanvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('neuralnetworkcanvas', { static: true }) neuralNetworkCanvasRef!: ElementRef<HTMLCanvasElement>;
   private neuralNetworkRenderer = new NeuralNetworkRenderer();
 
   // Decision boundary visualization
-  @ViewChild('decisionboundarycanvas', { static: true })
-  decisionBoundaryCanvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('decisionboundarycanvas', { static: true }) decisionBoundaryCanvasRef!: ElementRef<HTMLCanvasElement>;
   private decisionBoundaryRenderer = new DecisionBoundaryRenderer();
 
   ngOnInit() {
-    this.neuralNetworkRenderer.init(this.canvasRef.nativeElement);
+    this.neuralNetworkRenderer.init(this.neuralNetworkCanvasRef.nativeElement);
     this.decisionBoundaryRenderer.init(this.decisionBoundaryCanvasRef.nativeElement);
     window.addEventListener('resize', this.onResize);
     this.onResize();
@@ -71,10 +70,10 @@ export class MLPComponent implements OnInit, OnDestroy {
   }
 
   private onResize = () => {
-    const width = this.canvasRef.nativeElement.clientWidth;
-    const height = Math.min(width, window.innerHeight / 2);
-    this.neuralNetworkRenderer.resize(width, height);
-    this.decisionBoundaryRenderer.resize(width, height);
+    const nnWidth = this.neuralNetworkCanvasRef.nativeElement.clientWidth;
+    const dbWidth = this.decisionBoundaryCanvasRef.nativeElement.clientWidth;
+    this.neuralNetworkRenderer.resize(nnWidth, Math.min(nnWidth, window.innerHeight / 2));
+    this.decisionBoundaryRenderer.resize(dbWidth, Math.min(dbWidth, window.innerHeight / 2));
   };
 
   reset(): void {

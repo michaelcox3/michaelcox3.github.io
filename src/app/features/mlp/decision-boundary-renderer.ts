@@ -3,7 +3,7 @@ import { NeuralNetwork, TrainingData, Value } from './models';
 import * as THREE from 'three';
 
 export class DecisionBoundaryRenderer extends BaseRenderer {
-  private resolution = 50; // grid samples per axis
+  private resolution = 32; // grid samples per axis
   private padding = 0.5;
 
   render(network: NeuralNetwork, data: TrainingData) {

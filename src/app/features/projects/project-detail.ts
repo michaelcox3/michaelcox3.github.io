@@ -16,7 +16,7 @@ export class ProjectDetailComponent {
   async ngOnInit() {
     const slug = this.route.snapshot.paramMap.get('slug');
     const project = PROJECTS.find((p) => p.slug === slug);
-    if (project) {
+    if (project?.component) {
       this.projectComponent.set(await project.component());
     }
     this.loading.set(false);

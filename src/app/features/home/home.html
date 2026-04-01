@@ -6,14 +6,24 @@
 
     @if (projects.length > 0) {
       <div class="flex flex-col gap-5">
-        @for (project of projects; track project.slug) {
-          <a [routerLink]="['/projects', project.slug]" class="group">
-            <div class="flex justify-between w-full">
-              <h2 class="font-bold text-cyan-500 group-hover:underline">{{ project.title }}</h2>
-              <div class="min-w-fit">{{ project.publishDate | date: 'MMM d, yyyy' }}</div>
-            </div>
-            <div>{{ project.summary }}</div>
-          </a>
+        @for (project of projects; track (project.slug ?? project.title)) {
+          @if (project.externalUrl) {
+            <a [href]="project.externalUrl" target="_blank" rel="noopener noreferrer" class="group">
+              <div class="flex justify-between w-full">
+                <h2 class="font-bold text-cyan-500 group-hover:underline">{{ project.title }}</h2>
+                <div class="min-w-fit">{{ project.publishDate | date: 'MMM d, yyyy' }}</div>
+              </div>
+              <div>{{ project.summary }}</div>
+            </a>
+          } @else {
+            <a [routerLink]="['/projects', project.slug]" class="group">
+              <div class="flex justify-between w-full">
+                <h2 class="font-bold text-cyan-500 group-hover:underline">{{ project.title }}</h2>
+                <div class="min-w-fit">{{ project.publishDate | date: 'MMM d, yyyy' }}</div>
+              </div>
+              <div>{{ project.summary }}</div>
+            </a>
+          }
         }
       </div>
     } @else {

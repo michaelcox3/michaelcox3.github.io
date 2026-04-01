@@ -1,11 +1,12 @@
 import { Type } from '@angular/core';
 
 export interface Project {
-  slug: string;
+  slug?: string;
   title: string;
   summary: string;
   publishDate: Date;
-  component: () => Promise<Type<unknown>>;
+  externalUrl?: string;
+  component?: () => Promise<Type<unknown>>;
 }
 
 export const PROJECTS: Project[] = [
@@ -13,14 +14,26 @@ export const PROJECTS: Project[] = [
     slug: 'mlp-classifier-visualization',
     title: 'Multi-Layer Perceptron Classifier Visualization',
     summary: 'Train a simple MLP on 2D datasets and visualize the decision boundary and network structure.',
-    publishDate: new Date('2026-03-21'),
+    publishDate: new Date(2026, 2, 21),
     component: () => import('../../features/mlp/mlp').then((m) => m.MLPComponent),
   },
   {
     slug: 'kmeans-visualizer',
     title: 'KMeans Visualizer',
-    summary: 'A tool to visualize the KMeans clustering algorithm.',
-    publishDate: new Date('2026-03-16'),
+    summary: 'Web tool to visualize the KMeans clustering algorithm.',
+    publishDate: new Date(2026, 2, 16),
     component: () => import('../../features/kmeans/kmeans').then((m) => m.KMeansComponent),
   },
+  {
+    title: 'Rubiks RL Solver',
+    summary: "Rubiks-RL is a reinforcement learning project to solve a Rubik's Cube using Deep Q-Networks (DQN)",
+    publishDate: new Date(2025, 7, 24),
+    externalUrl: 'https://github.com/michaelcox3/rubiks-rl'
+  },
+  {
+    title: 'IAI Slide Driver',
+    summary: '.NET Driver that controls PCON / SCON slides from IAI America',
+    publishDate: new Date(2023, 2, 6),
+    externalUrl: 'https://github.com/michaelcox3/IAI-Slide-Driver'
+  }
 ];

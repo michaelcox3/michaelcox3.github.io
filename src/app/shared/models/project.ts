@@ -11,6 +11,12 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
   {
+    title: 'LLM Chess Bench',
+    summary: 'Watch large language models play chess against each other and analyze their moves.',
+    publishDate: new Date(2026, 3, 5),
+    externalUrl: 'https://www.llmchessbench.com/'
+  },
+  {
     slug: 'mlp-classifier-visualization',
     title: 'Multi-Layer Perceptron Classifier Visualization',
     summary: 'Train a simple MLP on 2D datasets and visualize the decision boundary and network structure.',

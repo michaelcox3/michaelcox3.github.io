@@ -24,11 +24,10 @@ export const PROJECTS: Project[] = [
     component: () => import('../../features/mlp/mlp').then((m) => m.MLPComponent),
   },
   {
-    slug: 'kmeans-visualizer',
-    title: 'KMeans Visualizer',
-    summary: 'Web tool to visualize the KMeans clustering algorithm.',
-    publishDate: new Date(2026, 2, 16),
-    component: () => import('../../features/kmeans/kmeans').then((m) => m.KMeansComponent),
+    title: 'CS 7641: Supervised Learning Report',
+    summary: 'Tuned and benchmarked four supervised learning models (Decision Tree, KNN, SVM, MLP) using validation curves for hyperparameter optimization and evaluated performance via F1 score across the Adult Census Income and Wine Quality datasets.',
+    publishDate: new Date(2026, 1, 23),
+    externalUrl: 'https://github.com/michaelcox3/cs-7641-sl-report'
   },
   {
     title: 'Rubiks RL Solver',
